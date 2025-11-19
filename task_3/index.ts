@@ -1,6 +1,6 @@
 interface BallonI {
-    id: number
-    isPublic: boolean
+	id: number
+	isPublic: boolean
 }
 
 /**
@@ -10,10 +10,12 @@ interface BallonI {
  * @example const res = await fetchBallonAmount(202);
  */
 async function fetchBallonAmount(id: BallonI['id']): Promise<number> {
-	const RANDOM_TIMEOUT: number = Math.ceil(Math.random() * 10000); // 1-9 секунд
-	const RANDOM_AMOUNT: number = Math.ceil(Math.random() * id); // случайное число
+	const RANDOM_TIMEOUT: number = Math.ceil(Math.random() * 10000) // 1-9 секунд
+	const RANDOM_AMOUNT: number = Math.ceil(Math.random() * id) // случайное число
 
-	return new Promise(resolve => setTimeout(() => resolve(RANDOM_AMOUNT), RANDOM_TIMEOUT));
+	return new Promise(resolve =>
+		setTimeout(() => resolve(RANDOM_AMOUNT), RANDOM_TIMEOUT)
+	)
 }
 
 // данные о шариках
@@ -42,6 +44,18 @@ const BALLONS: { [key: string]: BallonI } = {
 		id: 911,
 		isPublic: true,
 	},
-};
+}
 
 // Ваш код здесь
+
+const publicBallons = Object.values(BALLONS).filter(ballon => ballon.isPublic)
+
+;(async () => {
+	// Параллельные запросы для всех публичных шариков
+	const amounts = await Promise.all(
+		publicBallons.map(ballon => fetchBallonAmount(ballon.id))
+	)
+
+	const totalAmount = amounts.reduce((sum, amount) => sum + amount, 0)
+	console.log('Total amount of public ballons:', totalAmount)
+})()
