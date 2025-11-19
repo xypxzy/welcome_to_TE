@@ -8,32 +8,36 @@ import styles from './page.module.css';
 import { fetchOnePost } from '@/libs/fetchOnePost';
 
 const ComponentOne = () => {
-    const { data } = useSWR('custom_key_1', fetchOnePost);
+    const { data, isLoading } = useSWR('custom_key_1', fetchOnePost);
     //...some logic
 
-    return data ? (
+    if (isLoading) {
+        return <div>...Loading ComponentOne</div>;
+    }
+
+    return (
         <div className={styles.card}>
             <h2>{data.title}</h2>
             <p>{data.body}</p>
             <span>ComponentOne</span>
         </div>
-    ) : (
-        <div>...Loading ComponentOne</div>
     );
 };
 
 const ComponentTwo = () => {
-    const { data } = useSWR('custom_key_2', () => fetchOnePost({ delayMS: 2000 }));
+    const { data, isLoading } = useSWR('custom_key_1', fetchOnePost);
     //...some logic
 
-    return data ? (
+    if (isLoading) {
+        return <div>...Loading ComponentTwo</div>;
+    }
+
+    return (
         <div className={styles.card}>
             <h2>{data.title}</h2>
             <p>{data.body}</p>
             <span>ComponentTwo</span>
         </div>
-    ) : (
-        <div>...Loading ComponentTwo</div>
     );
 };
 
